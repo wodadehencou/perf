@@ -39,3 +39,22 @@ func DisplayTime(t int64) string {
 	}
 	return fmt.Sprintf("%d %s", d, unit)
 }
+
+func Run(f func(), name string) {
+	start := time.Now()
+	f()
+	diff := time.Since(start).Nanoseconds()
+	n := (int64(time.Second) / diff)
+	n = n + n/5
+	t := 0
+	for n > 10 {
+		n /= 10
+		t++
+	}
+	for t > 0 {
+		n = n * 10
+		t--
+	}
+	fmt.Printf("%s run %d times\n", name, int(n))
+	RunNTimes(f, int(n), name)
+}
