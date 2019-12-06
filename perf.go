@@ -2,10 +2,37 @@ package perf
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"runtime"
+	"strings"
 	"time"
 )
+
+const _EnvPath = "WODADEHENCOU_PERF"
+const _Enable = "enable"
+const _True = "true"
+
+var enable bool
+
+func init() {
+	cfg := os.Getenv(_EnvPath)
+	cfg = strings.ToLower(cfg)
+	if strings.Compare(cfg, _Enable) == 0 {
+		enable = true
+		return
+	}
+	if strings.Compare(cfg, _True) == 0 {
+		enable = true
+		return
+	}
+	enable = false
+	return
+}
+
+func Enable() bool {
+	return enable
+}
 
 // RunNTimes is a function to run f() n times, return one time of f()
 func RunNTimes(f func(), n int, name string) {
@@ -57,4 +84,10 @@ func Run(f func(), name string) {
 	}
 	fmt.Printf("%s run %d times\n", name, int(n))
 	RunNTimes(f, int(n), name)
+}
+
+func MayRun(f func(), name string) {
+	if Enable() {
+		Run(f, name)
+	}
 }
